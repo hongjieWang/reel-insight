@@ -1,11 +1,6 @@
 import axios from "axios";
-import type {
-  AxiosInstance,
-  AxiosError,
-  InternalAxiosRequestConfig,
-  AxiosResponse,
-} from "axios";
-
+import type { AxiosInstance, AxiosError, AxiosResponse } from "axios";
+import { useUserStore } from "../store/useUserStore";
 // 定义接口返回的标准格式 (根据后端实际情况调整)
 interface Result<T = any> {
   code: number;
@@ -23,19 +18,17 @@ const service: AxiosInstance = axios.create({
 
 // 2. 请求拦截器
 service.interceptors.request.use(
-  (config: InternalAxiosRequestConfig) => {
-    // 在发送请求之前做些什么
-    // 例如：从 localStorage 获取 token 并添加到 header
-    const token = localStorage.getItem("token");
+  (config) => {
+    // ✅ 从 Zustand Store 中获取 Token
+    // getState() 可以在组件外部（纯JS文件中）读取状态
+    const token = useUserStore.getState().token;
+
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
-  (error: AxiosError) => {
-    // 对请求错误做些什么
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
 // 3. 响应拦截器
@@ -60,8 +53,8 @@ service.interceptors.response.use(
 
     switch (status) {
       case 401:
-        message = "未授权，请重新登录";
-        // 这里可以执行登出逻辑，跳转到登录页
+        useUserStore.getState().logout();
+        window.location.href = "/login";
         break;
       case 403:
         message = "拒绝访问";
