@@ -1,24 +1,37 @@
 import type { Metadata } from "next";
-import { Geist, Noto_Sans_SC } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Noto_Sans_SC({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-// 1. 配置字体
-const notoSansSC = Noto_Sans_SC({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "700"],
-  variable: "--font-noto-sans",
+// 配置 Noto Sans SC 本地字体
+const notoSansSC = localFont({
+  src: [
+    {
+      path: "./fonts/NotoSansSC-Light.woff2",
+      weight: "300",
+      style: "normal",
+    },
+    {
+      path: "./fonts/NotoSansSC-Regular.woff2",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "./fonts/NotoSansSC-Medium.woff2",
+      weight: "500",
+      style: "normal",
+    },
+    {
+      path: "./fonts/NotoSansSC-Bold.woff2",
+      weight: "700",
+      style: "normal",
+    },
+  ],
+  // 定义 CSS 变量，方便在 Tailwind 中使用 (可选)
+  variable: "--font-noto-sans-sc",
+  // 使用 swap 策略，防止加载时文字隐形
+  display: "swap",
 });
 
 // 2. 配置 SEO Metadata (服务端渲染生成的头部信息)
